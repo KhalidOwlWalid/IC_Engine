@@ -15,17 +15,18 @@ def main():
 
 
     # Shape properties
-    width, height = 0.05, 0.3
 
     # Piston properties
     crank_offset = 0.2
     ra_ratio = 3
     connecting_rod_length = crank_offset * ra_ratio
+    cr_width, cr_height = 0.05, connecting_rod_length
+    cp_width, cp_height = 0.05, crank_offset
 
     # Equation notation
     a = crank_offset
     r = connecting_rod_length
-    theta_deg = 0
+    theta_deg = 270
     theta_rad = np.deg2rad(theta_deg)
 
     # Connecting rod length bottom position
@@ -34,17 +35,15 @@ def main():
 
     # Current piston position from wrist axis
     s = ic_eng.get_current_piston_position(a, r, theta_rad)
-    sin_alpha = s * np.sin(theta_rad) / r
-    alpha = np.arcsin(sin_alpha)
-    alpha = 0
+    alpha = np.arcsin((a/r) * np.sin(theta_rad))
 
-    connecting_rod_coords = (x, y)
-    connecting_rod_coords_with_offset = (x - width/2, y)
-    connecting_rod = patches.Rectangle(connecting_rod_coords_with_offset, width, height, fill=True, rotation_point=connecting_rod_coords, angle=np.rad2deg(alpha))
+    crank_pin_coords = (x, y)
+    crank_pin_width_offset = (x - cr_width/2, y)
+    connecting_rod = patches.Rectangle(crank_pin_width_offset, cr_width, cr_height, fill=True, rotation_point=crank_pin_coords, angle=np.rad2deg(alpha))
 
-    crank_pin_coords = (0, 0)
-    crank_pin_coords_with_offset = (crank_pin_coords[0] - width/2, crank_pin_coords[1])
-    crank_pin = patches.Rectangle(crank_pin_coords_with_offset, width, crank_offset, fill=True, color="red", rotation_point=(0, 0), angle=0)
+    crankshaft_center = (0, 0)
+    crank_pin_coords_with_offset = (crankshaft_center[0] - cp_width/2, crankshaft_center[1])
+    crank_pin = patches.Rectangle(crank_pin_coords_with_offset, cp_width, cp_height, fill=True, color="red", rotation_point=(0, 0), angle=-theta_deg)
 
     rod_path = patches.Circle((0, 0), radius=crank_offset, fill=False, linestyle="dashed")
     ax.add_patch(connecting_rod)
@@ -53,6 +52,7 @@ def main():
 
     # Pivot point
     ax.scatter(0, 0)
+    ax.scatter(crank_pin_coords[0], crank_pin_coords[1])
     plt.show()
 
 if __name__ == "__main__":
