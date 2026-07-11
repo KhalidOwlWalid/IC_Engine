@@ -22,16 +22,44 @@ int main() {
         timestamp.push_back(start_time + i * timestep);
     }
 
+    float R = 3;        // R = r/a
+    float a = 0.02;     // Length of the crankshaft pin to the crankshaft center
+    float r = R * a;    // Length of the connecting rod
+    float l_ph = 0.04;  // Length of the cylinder head
+    float r_ph = 0.1;   // Radius of the piston head
+
     // TODO: Draw piston, conrod, and crankshaft and publish it onto rerun 3d model
     // Let it perform a circular motion to show that it can work as a base example of our engine_lib functionality
     double cyl_size = 0;
+    double rotation_angle_deg = 0;
     for (size_t i = 0; i < n; i++) {
         rec.set_time_duration_secs("time", timestamp[i]);
         rec.log(
-            "cylinders",
+            "cylinder_1",
             rerun::Cylinders3D::from_lengths_and_radii(
                 {cyl_size + static_cast<double>(i)},
                 {cyl_size + static_cast<double>(i) * 0.05}
+            ).with_rotation_axis_angles({
+                rerun::RotationAxisAngle(
+                    {1.0f, 0.0, 0.0},
+                    rerun::Angle::degrees(rotation_angle_deg + static_cast<double>(i))
+                )
+            })
+ 
+        );
+        float xyz[3] = {10.0f, 10.0f, 0.0};
+        rec.log(
+            "cylinder_2",
+            rerun::Cylinders3D::from_lengths_and_radii(
+                {cyl_size + static_cast<double>(i)},
+                {cyl_size + static_cast<double>(i) * 0.05}
+            ).with_rotation_axis_angles({
+                rerun::RotationAxisAngle(
+                    {1.0f, 0.0, 0.0},
+                    rerun::Angle::degrees(rotation_angle_deg + static_cast<double>(i))
+                )
+            }).with_centers(
+                rerun::components::Translation3D(xyz)
             )
         );
     }
