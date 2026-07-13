@@ -1,12 +1,6 @@
+#pragma once
+
 #include <rerun.hpp>
-#include <string>
-#include <vector>
-#include <spdlog/spdlog.h>
-
-#include <numeric>
-#include <memory>
-
-std::string app_id {"engine_3d_model"};
 
 class EngineComponent {
 
@@ -116,42 +110,4 @@ class Journal: public CylinderBaseShape {
             CylinderBaseShape("engine_comp/journal", length, radius, pivot_offset) {}
 
         ~Journal() = default;
-};
-
-int main() {
-    const rerun::RecordingStream rec = rerun::RecordingStream(app_id);
-    rec.spawn().exit_on_failure();
-
-    std::vector<double> timestamp;
-    constexpr double start_time = 0;
-    constexpr double stop_time = 5;
-    constexpr double timestep = 0.01;
-    constexpr size_t n = static_cast<size_t>(std::ceil((stop_time - start_time)/timestep));
-    timestamp.reserve(n);
-
-    for (size_t i = 0; i < n; i++) {
-        timestamp.push_back(start_time + i * timestep);
-    }
-
-    float R = 3;        // R = r/a
-    float a = 0.02;     // Length of the crankshaft pin to the crankshaft center
-    float r = R * a;    // Length of the connecting rod
-    float l_ph = 0.04;  // Length of the cylinder head
-    float r_ph = 0.1;   // Radius of the piston head
-
-    std::vector<std::unique_ptr<EngineComponent>> engine_components;
-    engine_components.push_back(std::make_unique<Journal>(a, 0.01f, rerun::datatypes::Vec3D(0.0, 0.0, a/2)));
-    engine_components.push_back(std::make_unique<ConnectingRod>(r, 0.01, rerun::datatypes::Vec3D(0.0, 0.0, a + r/2)));
-    engine_components.push_back(std::make_unique<PistonHead>(l_ph, r_ph, rerun::datatypes::Vec3D(0.0, 0.0, a + r + l_ph/2)));
-
-    // Let it perform a circular motion to show that it can work as a base example of our engine_lib functionality
-    double cyl_size = 0;
-    double rotation_angle_deg = 0;
-    for (size_t i = 0; i < n; i++) {
-        rec.set_time_duration_secs("time", timestamp[i]);
-
-        for (const auto& component: engine_components) {
-            component->log_component(rec);
-        }
-    }
 };
