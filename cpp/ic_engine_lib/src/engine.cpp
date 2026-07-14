@@ -1,5 +1,7 @@
 #include "engine.hpp"
 
+namespace ice {
+
 float stroke_length(float a) {
     return 2 * a;
 };
@@ -14,4 +16,6 @@ float piston_current_position(float a, float r, float theta_deg) {
 
 float piston_speed_ratio(float R, float theta_deg) {
     return (M_PI / 2) * sin(ice::deg2rad(theta_deg)) * (1 + cos(ice::deg2rad(theta_deg)) / sqrt(pow(R, 2) - pow(sin(ice::deg2rad(theta_deg)), 2)));
+}
+
 }
