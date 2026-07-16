@@ -29,6 +29,6 @@ int main() {
         rerun::LineStrip2D(another_vec2d);
 
     std::string path {"strip"};
-    rerun_viz::plot_2d(rec, path, vec2d); 
+    ice::rerun_viz::plot_2d(rec, path, vec2d); 
 
 }

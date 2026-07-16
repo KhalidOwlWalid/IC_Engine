@@ -5,9 +5,9 @@
 
 namespace ice {
 
-float stroke_length(float a);
-float average_piston_speed(float S, float N);
-float piston_current_position(float a, float r, float theta_deg);
-float piston_speed_ratio(float R, float theta_deg);
+double stroke_length(double a);
+double average_piston_speed(double S, double N);
+double piston_current_position(double a, double r, double theta_deg);
+double piston_speed_ratio(double R, double theta_deg);
 
 }
